@@ -21,28 +21,25 @@ function refreshTimeTable() {
     $.each(timeTable.roomList, (index, room) => {
       headerRowByRoom
         .append($("<th/>")
-          .append($("<span/>").text(room.name))
-          .append($(`<button type="button" class="ml-2 mb-1 btn btn-light btn-sm p-1"/>`)
-            .append($(`<small class="fas fa-trash"/>`)
-            ).click(() => deleteRoom(room))));
+          .append($("<span/>").text(room.code)));
     });
     const theadByTeacher = $("<thead>").appendTo(timeTableByTeacher);
     const headerRowByTeacher = $("<tr>").appendTo(theadByTeacher);
     headerRowByTeacher.append($("<th>Timeslot</th>"));
-    const teacherList = [...new Set(timeTable.lessonList.map(lesson => lesson.teacher))];
+    const teacherList = timeTable.teacherList;
     $.each(teacherList, (index, teacher) => {
       headerRowByTeacher
         .append($("<th/>")
-          .append($("<span/>").text(teacher)));
+          .append($("<span/>").text(teacher.code)));
     });
     const theadByStudentGroup = $("<thead>").appendTo(timeTableByStudentGroup);
     const headerRowByStudentGroup = $("<tr>").appendTo(theadByStudentGroup);
     headerRowByStudentGroup.append($("<th>Timeslot</th>"));
-    const studentGroupList = [...new Set(timeTable.lessonList.map(lesson => lesson.studentGroup))];
+    const studentGroupList = timeTable.curriculumList;
     $.each(studentGroupList, (index, studentGroup) => {
       headerRowByStudentGroup
         .append($("<th/>")
-          .append($("<span/>").text(studentGroup)));
+          .append($("<span/>").text(studentGroup.code)));
     });
 
     const tbodyByRoom = $("<tbody>").appendTo(timeTableByRoom);
@@ -51,71 +48,64 @@ function refreshTimeTable() {
 
     const LocalTime = JSJoda.LocalTime;
 
-    $.each(timeTable.timeslotList, (index, timeslot) => {
+    $.each(timeTable.periodList, (index, period) => {
       const rowByRoom = $("<tr>").appendTo(tbodyByRoom);
       rowByRoom
         .append($(`<th class="align-middle"/>`)
           .append($("<span/>").text(`
-                    ${timeslot.dayOfWeek.charAt(0) + timeslot.dayOfWeek.slice(1).toLowerCase()}
-                    ${LocalTime.parse(timeslot.startTime).format(dateTimeFormatter)}
-                    -
-                    ${LocalTime.parse(timeslot.endTime).format(dateTimeFormatter)}
+                    ${period.label}
                 `)
             .append($(`<button type="button" class="ml-2 mb-1 btn btn-light btn-sm p-1"/>`)
               .append($(`<small class="fas fa-trash"/>`)
-              ).click(() => deleteTimeslot(timeslot)))));
+              ).click(() => deleteTimeslot(period)))));
       $.each(timeTable.roomList, (index, room) => {
-        rowByRoom.append($("<td/>").prop("id", `timeslot${timeslot.id}room${room.id}`));
+        rowByRoom.append($("<td/>").prop("id", `timeslot${period.id}room${room.id}`));
       });
 
       const rowByTeacher = $("<tr>").appendTo(tbodyByTeacher);
       rowByTeacher
         .append($(`<th class="align-middle"/>`)
           .append($("<span/>").text(`
-                    ${timeslot.dayOfWeek.charAt(0) + timeslot.dayOfWeek.slice(1).toLowerCase()}
-                    ${LocalTime.parse(timeslot.startTime).format(dateTimeFormatter)}
-                    -
-                    ${LocalTime.parse(timeslot.endTime).format(dateTimeFormatter)}
+                    ${period.label}
                 `)));
       $.each(teacherList, (index, teacher) => {
-        rowByTeacher.append($("<td/>").prop("id", `timeslot${timeslot.id}teacher${convertToId(teacher)}`));
+        rowByTeacher.append($("<td/>").prop("id", `timeslot${period.id}teacher${teacher.id}`));
       });
-
       const rowByStudentGroup = $("<tr>").appendTo(tbodyByStudentGroup);
       rowByStudentGroup
         .append($(`<th class="align-middle"/>`)
           .append($("<span/>").text(`
-                    ${timeslot.dayOfWeek.charAt(0) + timeslot.dayOfWeek.slice(1).toLowerCase()}
-                    ${LocalTime.parse(timeslot.startTime).format(dateTimeFormatter)}
-                    -
-                    ${LocalTime.parse(timeslot.endTime).format(dateTimeFormatter)}
+                    ${period.label}
                 `)));
       $.each(studentGroupList, (index, studentGroup) => {
-        rowByStudentGroup.append($("<td/>").prop("id", `timeslot${timeslot.id}studentGroup${convertToId(studentGroup)}`));
+        rowByStudentGroup.append($("<td/>").prop("id", `timeslot${period.id}studentGroup${studentGroup.id}`));
       });
     });
 
-    $.each(timeTable.lessonList, (index, lesson) => {
-      const color = pickColor(lesson.subject);
+    $.each(timeTable.lectureList, (index, lecture) => {
+      const color = pickColor(lecture.course.code);
+      const studentGroups = Array.from(lecture.course.curriculumSet).map(curriculum => curriculum.code).join(", ");
       const lessonElementWithoutDelete = $(`<div class="card" style="background-color: ${color}"/>`)
         .append($(`<div class="card-body p-2"/>`)
-          .append($(`<h5 class="card-title mb-1"/>`).text(lesson.subject))
+          .append($(`<h5 class="card-title mb-1"/>`).text(lecture.course.code))
           .append($(`<p class="card-text ml-2 mb-1"/>`)
-            .append($(`<em/>`).text(`by ${lesson.teacher}`)))
-          .append($(`<small class="ml-2 mt-1 card-text text-muted align-bottom float-right"/>`).text(lesson.id))
-          .append($(`<p class="card-text ml-2"/>`).text(lesson.studentGroup)));
+            .append($(`<em/>`).text(`${lecture.course.teacher.code}`)))
+          .append($(`<small class="ml-2 mt-1 card-text text-muted align-bottom float-right"/>`).text(lecture.id))
+          .append($(`<p class="card-text ml-2"/>`).text(studentGroups)));
       const lessonElement = lessonElementWithoutDelete.clone();
       lessonElement.find(".card-body").prepend(
         $(`<button type="button" class="ml-2 btn btn-light btn-sm p-1 float-right"/>`)
           .append($(`<small class="fas fa-trash"/>`)
-          ).click(() => deleteLesson(lesson))
+          ).click(() => deleteLesson(lecture))
       );
-      if (lesson.timeslot == null || lesson.room == null) {
+      if (lecture.period == null || lecture.room == null) {
         unassignedLessons.append(lessonElement);
       } else {
-        $(`#timeslot${lesson.timeslot.id}room${lesson.room.id}`).append(lessonElement);
-        $(`#timeslot${lesson.timeslot.id}teacher${convertToId(lesson.teacher)}`).append(lessonElementWithoutDelete.clone());
-        $(`#timeslot${lesson.timeslot.id}studentGroup${convertToId(lesson.studentGroup)}`).append(lessonElementWithoutDelete.clone());
+        $(`#timeslot${lecture.period.id}room${lecture.room.id}`).append(lessonElement);
+        $(`#timeslot${lecture.period.id}teacher${lecture.course.teacher.id}`).append(lessonElementWithoutDelete.clone());
+        lecture.course.curriculumSet.forEach(curriculum => {
+          $(`#timeslot${lecture.period.id}studentGroup${curriculum.id}`).append(lessonElementWithoutDelete.clone());
+        });
       }
     });
   });

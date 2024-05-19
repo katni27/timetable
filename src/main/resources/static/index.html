@@ -1,8 +1,8 @@
-<html lang="en">
+<html lang="ru">
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>School timetabling - OptaPlanner Spring Boot</title>
+    <title>Составление расписания школы - OptaPlanner Spring Boot</title>
     <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/webjars/font-awesome/css/all.css" />
 </head>
@@ -16,32 +16,32 @@
     <div class="sticky-top d-flex justify-content-center align-items-center" aria-live="polite" aria-atomic="true">
         <div id="notificationPanel" style="position: absolute; top: .5rem;"></div>
     </div>
-    <h1>High school time table solver</h1>
-    <p>Generate the optimal schedule for your teachers and students.</p>
+    <h1>Решение расписания средней школы</h1>
+    <p>Создайте оптимальное расписание для ваших учителей и студентов.</p>
 
     <div class="mb-2">
         <button id="refreshButton" type="button" class="btn btn-secondary">
-            <span class="fas fa-refresh"></span> Refresh
+            <span class="fas fa-refresh"></span> Обновить
         </button>
         <button id="solveButton" type="button" class="btn btn-success">
-            <span class="fas fa-play"></span> Solve
+            <span class="fas fa-play"></span> Решить
         </button>
         <button id="stopSolvingButton" type="button" class="btn btn-danger">
-            <span class="fas fa-stop"></span> Stop solving
+            <span class="fas fa-stop"></span> Остановить решение
         </button>
         <!--    <button type="button" class="float-right btn btn-warning"><span class="fas fa-stop"></span> Terminate</button>-->
-        <span id="score" class="score ml-2 align-middle font-weight-bold">Score: ?</span>
+        <span id="score" class="score ml-2 align-middle font-weight-bold">Счёт: ?</span>
 
         <div class="float-right">
             <ul class="nav nav-pills" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="byRoomTab" data-toggle="tab" href="#byRoomPanel" role="tab" aria-controls="byRoomPanel" aria-selected="true">By room</a>
+                    <a class="nav-link active" id="byRoomTab" data-toggle="tab" href="#byRoomPanel" role="tab" aria-controls="byRoomPanel" aria-selected="true">По аудитории</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="byTeacherTab" data-toggle="tab" href="#byTeacher" role="tab" aria-controls="byTeacher" aria-selected="false">By teacher</a>
+                    <a class="nav-link" id="byTeacherTab" data-toggle="tab" href="#byTeacher" role="tab" aria-controls="byTeacher" aria-selected="false">По учителю</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="byStudentGroupTab" data-toggle="tab" href="#byStudentGroup" role="tab" aria-controls="byStudentGroup" aria-selected="false">By student group</a>
+                    <a class="nav-link" id="byStudentGroupTab" data-toggle="tab" href="#byStudentGroup" role="tab" aria-controls="byStudentGroup" aria-selected="false">По группе студентов</a>
                 </li>
             </ul>
         </div>
@@ -65,17 +65,17 @@
     </div>
     <div class="mb-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lessonDialog">
-            <span class="fas fa-plus"></span> Add lesson
+            <span class="fas fa-plus"></span> Добавить урок
         </button>
         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#timeslotDialog">
-            <span class="fas fa-plus"></span> Add timeslot
+            <span class="fas fa-plus"></span> Добавить временной интервал
         </button>
         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#roomDialog">
-            <span class="fas fa-plus"></span> Add room
+            <span class="fas fa-plus"></span> Добавить аудиторию
         </button>
     </div>
 
-    <h2>Unassigned lessons</h2>
+    <h2>Неназначенные уроки</h2>
     <div id="unassignedLessons" class="card-columns"></div>
 </div>
 

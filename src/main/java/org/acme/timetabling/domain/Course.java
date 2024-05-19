@@ -25,7 +25,7 @@ public class Course {
     private int lectureSize;
     private int minWorkingDaySize;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Curriculum> curriculumSet;
     private int studentSize;
 

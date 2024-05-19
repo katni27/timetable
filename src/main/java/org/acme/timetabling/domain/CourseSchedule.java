@@ -78,7 +78,7 @@ public class CourseSchedule {
         return courseList;
     }
 
-    public List<Weekday> getDayList() {
+    public List<Weekday> getWeekdayList() {
         return weekdayList;
     }
 

@@ -44,10 +44,6 @@ public class Room {
         return capacity;
     }
 
-    public String getLabel() {
-        return code;
-    }
-
     @Override
     public String toString() {
         return code;
