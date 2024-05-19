@@ -19,16 +19,15 @@ public class Weekday {
 
     private int dayIndex;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Period> periodList;
 
     public Weekday() {
     }
 
-    public Weekday(int dayIndex, Period... periods) {
+    public Weekday(int dayIndex, List<Period> periods) {
         this.dayIndex = dayIndex;
-        this.periodList = Arrays.stream(periods)
-                .collect(Collectors.toList());
+        this.periodList = periods;
     }
 
     public Long getId() {

@@ -1,6 +1,7 @@
 /target
 /build
 /local
+/src/main/resources/Load.json
 
 # Eclipse, Netbeans and IntelliJ files
 /.*

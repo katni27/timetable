@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Course {
 
     @PlanningId
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     private String code;
@@ -32,8 +32,9 @@ public class Course {
     public Course() {
     }
 
-    public Course(String code, Teacher teacher, int lectureSize, int studentSize, int minWorkingDaySize,
+    public Course(Long id, String code, Teacher teacher, int lectureSize, int studentSize, int minWorkingDaySize,
                   Curriculum... curricula) {
+        this.id = id;
         this.code = requireNonNull(code);
         this.teacher = requireNonNull(teacher);
         this.lectureSize = lectureSize;

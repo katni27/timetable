@@ -33,10 +33,6 @@ public class Teacher {
         return code;
     }
 
-    public String getLabel() {
-        return code;
-    }
-
     @Override
     public String toString() {
         return code;
