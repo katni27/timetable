@@ -13,7 +13,7 @@ import javax.persistence.Id;
 public class Curriculum {
 
     @PlanningId
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     private String code;
@@ -21,7 +21,8 @@ public class Curriculum {
     public Curriculum() {
     }
 
-    public Curriculum(String code) {
+    public Curriculum(Long id, String code) {
+        this.id = id;
         this.code = requireNonNull(code);
     }
 

@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class CourseScheduleSpringBootApp {
 
-    private static final int WEEKDAY_LIST_SIZE = 6;
-    private static final int TIMESLOT_LIST_SIZE = 8;
+    private static final int WEEKDAY_LIST_SIZE = 5;
+    private static final int TIMESLOT_LIST_SIZE = 4;
 
     public static void main(String[] args) {
         SpringApplication.run(CourseScheduleSpringBootApp.class, args);
@@ -63,13 +63,13 @@ public class CourseScheduleSpringBootApp {
                 JSONArray teacherList = jsonObject.getJSONArray("teacherList");
                 for (int i = 0; i < teacherList.length(); i++) {
                     JSONObject teacher = teacherList.getJSONObject(i);
-                    teacherRepository.save(new Teacher(teacher.getString("code")));
+                    teacherRepository.save(new Teacher(teacher.getInt("id") + 1L, teacher.getString("code")));
                 }
 
                 JSONArray curriculumList = jsonObject.getJSONArray("curriculumList");
                 for (int i = 0; i < curriculumList.length(); i++) {
                     JSONObject curriculum = curriculumList.getJSONObject(i);
-                    curriculumRepository.save(new Curriculum(curriculum.getString("code")));
+                    curriculumRepository.save(new Curriculum(curriculum.getInt("id") + 1L, curriculum.getString("code")));
                 }
 
                 JSONArray courseList = jsonObject.getJSONArray("courseList");

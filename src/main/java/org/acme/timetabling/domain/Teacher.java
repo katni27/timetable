@@ -13,7 +13,7 @@ import javax.persistence.Id;
 public class Teacher {
 
     @PlanningId
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     private String code;
@@ -21,7 +21,8 @@ public class Teacher {
     public Teacher() {
     }
 
-    public Teacher(String code) {
+    public Teacher(Long id, String code) {
+        this.id = id;
         this.code = requireNonNull(code);
     }
 
