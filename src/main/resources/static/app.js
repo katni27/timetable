@@ -1,5 +1,4 @@
 var autoRefreshIntervalId = null;
-const dateTimeFormatter = JSJoda.DateTimeFormatter.ofPattern('HH:mm')
 
 function refreshTimeTable() {
   $.getJSON("/timeTable", function (timeTable) {
@@ -17,11 +16,15 @@ function refreshTimeTable() {
 
     const theadByRoom = $("<thead>").appendTo(timeTableByRoom);
     const headerRowByRoom = $("<tr>").appendTo(theadByRoom);
-    headerRowByRoom.append($("<th>Timeslot</th>"));
+    headerRowByRoom.append($("<th> </th>"));
     $.each(timeTable.roomList, (index, room) => {
       headerRowByRoom
-        .append($("<th/>")
-          .append($("<span/>").text(room.code)));
+          .append($(`<th>`)
+              .append($("<span style='white-space: nowrap;'/>").text(`Номер: ${room.code}`))
+              .append($("<br/>"))
+              .append($("<span style='white-space: nowrap;'/>").text(room.type))
+              .append($("<br/>"))
+              .append($("<span style='white-space: nowrap;'/>").text(`Размер: ${room.capacity}`)));
     });
     const theadByTeacher = $("<thead>").appendTo(timeTableByTeacher);
     const headerRowByTeacher = $("<tr>").appendTo(theadByTeacher);
@@ -29,8 +32,8 @@ function refreshTimeTable() {
     const teacherList = timeTable.teacherList;
     $.each(teacherList, (index, teacher) => {
       headerRowByTeacher
-        .append($("<th/>")
-          .append($("<span/>").text(teacher.code)));
+        .append($(`<th style="text-align: center;">`)
+          .append($("<span style='white-space: nowrap;'/>").text(teacher.code)));
     });
     const theadByStudentGroup = $("<thead>").appendTo(timeTableByStudentGroup);
     const headerRowByStudentGroup = $("<tr>").appendTo(theadByStudentGroup);
@@ -38,7 +41,7 @@ function refreshTimeTable() {
     const studentGroupList = timeTable.curriculumList;
     $.each(studentGroupList, (index, studentGroup) => {
       headerRowByStudentGroup
-        .append($("<th/>")
+        .append($(`<th style="text-align: center;">`)
           .append($("<span/>").text(studentGroup.code)));
     });
 
@@ -46,37 +49,36 @@ function refreshTimeTable() {
     const tbodyByTeacher = $("<tbody>").appendTo(timeTableByTeacher);
     const tbodyByStudentGroup = $("<tbody>").appendTo(timeTableByStudentGroup);
 
-    const LocalTime = JSJoda.LocalTime;
-
     $.each(timeTable.periodList, (index, period) => {
       const rowByRoom = $("<tr>").appendTo(tbodyByRoom);
+      const firstSpaceIndex = period.label.search(/\s/);
+      const day = period.label.substring(0, firstSpaceIndex);
+      const time = period.label.substring(firstSpaceIndex + 1);
+
       rowByRoom
-        .append($(`<th class="align-middle"/>`)
-          .append($("<span/>").text(`
-                    ${period.label}
-                `)
-            .append($(`<button type="button" class="ml-2 mb-1 btn btn-light btn-sm p-1"/>`)
-              .append($(`<small class="fas fa-trash"/>`)
-              ).click(() => deleteTimeslot(period)))));
+          .append($(`<th class="align-middle"/>`)
+              .append($("<span/>").text(day))
+              .append($("<br/>"))
+              .append($("<span/>").text(time)));
       $.each(timeTable.roomList, (index, room) => {
         rowByRoom.append($("<td/>").prop("id", `timeslot${period.id}room${room.id}`));
       });
 
       const rowByTeacher = $("<tr>").appendTo(tbodyByTeacher);
       rowByTeacher
-        .append($(`<th class="align-middle"/>`)
-          .append($("<span/>").text(`
-                    ${period.label}
-                `)));
+          .append($(`<th class="align-middle"/>`)
+              .append($("<span/>").text(day))
+              .append($("<br/>"))
+              .append($("<span/>").text(time)));
       $.each(teacherList, (index, teacher) => {
         rowByTeacher.append($("<td/>").prop("id", `timeslot${period.id}teacher${teacher.id}`));
       });
       const rowByStudentGroup = $("<tr>").appendTo(tbodyByStudentGroup);
       rowByStudentGroup
-        .append($(`<th class="align-middle"/>`)
-          .append($("<span/>").text(`
-                    ${period.label}
-                `)));
+          .append($(`<th class="align-middle"/>`)
+              .append($("<span/>").text(day))
+              .append($("<br/>"))
+              .append($("<span/>").text(time)));
       $.each(studentGroupList, (index, studentGroup) => {
         rowByStudentGroup.append($("<td/>").prop("id", `timeslot${period.id}studentGroup${studentGroup.id}`));
       });
@@ -86,12 +88,12 @@ function refreshTimeTable() {
       const color = pickColor(lecture.course.code);
       const studentGroups = Array.from(lecture.course.curriculumSet).map(curriculum => curriculum.code).join(", ");
       const lessonElementWithoutDelete = $(`<div class="card" style="background-color: ${color}"/>`)
-        .append($(`<div class="card-body p-2"/>`)
-          .append($(`<h5 class="card-title mb-1"/>`).text(lecture.course.code))
-          .append($(`<p class="card-text ml-2 mb-1"/>`)
-            .append($(`<em/>`).text(`${lecture.course.teacher.code}`)))
-          .append($(`<small class="ml-2 mt-1 card-text text-muted align-bottom float-right"/>`).text(lecture.id))
-          .append($(`<p class="card-text ml-2"/>`).text(studentGroups)));
+          .append($(`<div class="card-body p-2"/>`)
+              .append($(`<h5 class="card-title mb-1"/>`).text(lecture.course.code))
+              .append($(`<p class="card-text ml-2 mb-1"/>`)
+                  .append($(`<em/>`).text(`${lecture.course.teacher.code}`)))
+              .append($(`<p class="card-text ml-2 mb-0"/>`).text(studentGroups))
+              .append($(`<p class="card-text ml-2"/>`).text(`Количество студентов: ${lecture.course.studentSize}`)));
       const lessonElement = lessonElementWithoutDelete.clone();
       lessonElement.find(".card-body").prepend(
         $(`<button type="button" class="ml-2 btn btn-light btn-sm p-1 float-right"/>`)
@@ -109,11 +111,6 @@ function refreshTimeTable() {
       }
     });
   });
-}
-
-function convertToId(str) {
-  // Base64 encoding without padding to avoid XSS
-  return btoa(str).replace(/=/g, "");
 }
 
 function solve() {

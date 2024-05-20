@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 public class Weekday {
 
-    private static final String[] WEEKDAYS = { "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс" };
+    private static final String[] WEEKDAYS = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье" };
 
     @PlanningId
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
